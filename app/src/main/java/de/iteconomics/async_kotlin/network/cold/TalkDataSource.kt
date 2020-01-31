@@ -26,6 +26,7 @@ class TalkDataSource(
             Erzeugt ein spezifisches Observable, das nur einen Wert zurückliefert
          */
         fun getSingleTalks(): Single<List<Talk>> {
+            // TODO: Werte lazy zurückgeben
             return Single.just(
                 talkClient.getTalks()
             )
@@ -35,6 +36,7 @@ class TalkDataSource(
             Erzeugt ein spezifisches Observable, das gar keinen Wert zurückliefert
          */
         fun markTalkAsFavorite(talk: Talk): Completable {
+            // TODO: Exception in Event Stream einfügen
             return Completable.fromAction {
                 talkClient.markTalkAsFavorite(talk)
             }
@@ -54,13 +56,14 @@ class TalkDataSource(
         }
 
         /*
-        Funktioniert nicht wirklich, da der Job und nicht das eigentliche Ergebnis zurückgegeben wird.
-        Der CoroutineScope sollte sinnvollerweise auf höherer Ebene (z.B. im ViewModel oder Presenter) gestartet werden.
+            Gibt einen Job zurück, aber nicht die Objekte -> Coroutinen sollten auf höherer Ebene
+            wie dem ViewModel oder Presenter gestartet werden
          */
         fun getTalksWithMainScope(): Job {
             val job = MainScope().launch {
                 talkClient.getTalks()
             }
+
             return job
         }
 
@@ -77,6 +80,7 @@ class TalkDataSource(
 
     inner class Flows {
 
+        // Stellt einen Lazy Flow ohne Ergebnis bereit
         fun markTalkAsFavorite(talk: Talk): Flow<Unit> {
             return flow {
                 talkClient.markTalkAsFavorite(talk)
@@ -84,13 +88,16 @@ class TalkDataSource(
             }
         }
 
+        // Stellt einen lazy Flow der Talks bereit
         fun getTalks(): Flow<List<Talk>> {
             return flow {
                 val talks = talkClient.getTalks()
+                // Übergibt Talks an den Flow
                 emit(talks)
             }
         }
 
+        // Kurzschreibweise der oberen Funktion
         fun getTalksWithFlowOf(): Flow<List<Talk>> {
             return flowOf(talkClient.getTalks())
         }

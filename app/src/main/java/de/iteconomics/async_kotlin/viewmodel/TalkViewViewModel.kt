@@ -15,9 +15,10 @@ class RxTalkViewModel(
 ) : ViewModel() {
 
 
-    // LiveData können von Views observed werden, die auf geänderte Werte reagieren.
+    // LiveData werden genutzt, um Daten an den View zu geben. Der View observed LiveData, solange er selbst lebt
     private val talkLiveData = MutableLiveData<List<Talk>>()
 
+    // Sammelt beobachtete Event Streams
     private var compositeDisposable = CompositeDisposable()
 
     // Muss beim Start des Views aufgerufen werden
@@ -48,6 +49,7 @@ class CoroutineTalkViewModel(
     private val dataSource: TalkDataSource.Coroutines
 ) : ViewModel() {
 
+    // Sammelt gestartete Jobs
     private var supervisorJob = SupervisorJob()
 
     private val talkLiveData = MutableLiveData<List<Talk>>()
